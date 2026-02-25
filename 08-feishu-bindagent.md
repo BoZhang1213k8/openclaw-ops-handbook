@@ -2,7 +2,7 @@
 
 ## 8.1 绑定方式
 
-飞书支持两种绑定方式：
+当前配置中，Agent 路由统一走 `bindings`；`groups` 用于群组行为控制（如 `requireMention`）。
 
 ### 方式一：通过 bindings 绑定（推荐）
 
@@ -14,6 +14,7 @@
     "agentId": "broadband-ops",
     "match": {
       "channel": "feishu",
+      "accountId": "main",                 // 与 accounts.main 对应；和 peer 同级
       "peer": {
         "kind": "group",
         "id": "<飞书群组 open_id>"     // 如 "oc_xxxxxxxxxxxx..."
@@ -23,9 +24,9 @@
 ]
 ```
 
-### 方式二：通过 groups 配置绑定
+### 方式二：通过 groups 配置群组行为（非路由）
 
-在 `channels.feishu.groups` 中直接指定：
+在 `channels.feishu.groups` 中设置群行为：
 
 ```jsonc
 "channels": {
@@ -33,8 +34,7 @@
     "groups": {
       "<飞书群组 open_id>": {
         "enabled": true,
-        "requireMention": true,
-        "agent": "broadband-ops"      // 直接在群组配置中指定 Agent
+        "requireMention": true
       }
     }
   }
@@ -45,32 +45,25 @@
 
 | 特性 | bindings 方式 | groups 方式 |
 |------|:---:|:---:|
-| 统一管理所有渠道绑定 | ✅ | ❌ |
+| Agent 路由匹配 | ✅ | ❌ |
+| `accountId` 匹配 | ✅ | ❌ |
 | 精细控制群组行为 | ❌ | ✅ |
-| 可设置 requireMention | ❌ | ✅ |
-| 支持默认路由 | ✅ | ❌ |
+| 可设置 `requireMention` | ❌ | ✅ |
 
-**建议：** 两种方式可以同时使用。`groups` 中设置群组行为（如 `requireMention`），`bindings` 中设置路由规则。
+**建议：** `groups` 用于行为控制，`bindings` 用于路由控制。多账号场景请在 `bindings.match.accountId` 显式配置账号名。
 
 ## 8.2 设置飞书默认路由
 
-通过 `channels.feishu.agent` 设置未匹配群组的默认 Agent：
+如果你使用多账号（如 `accounts.main`），通过 `bindings` 做飞书兜底时也要写 `match.accountId`，否则只会匹配 `default` 账号。
 
-```jsonc
-"channels": {
-  "feishu": {
-    "agent": "broadband-ops"    // 飞书默认 Agent
-  }
-}
-```
-
-也可以通过 bindings 设置兜底：
+当前配置更推荐通过 `bindings` 设置飞书兜底：
 
 ```jsonc
 {
   "agentId": "agent-manager",
   "match": {
-    "channel": "feishu"           // 无 peer → 匹配所有未绑定的飞书消息
+    "channel": "feishu",
+    "accountId": "main"           // 多账号时需要显式指定
   }
 }
 ```
@@ -82,10 +75,13 @@
 "feishu": {
   "enabled": true,
   "domain": "feishu",
-  "dmPolicy": "allowlist",                       // 仅白名单用户可私聊
-  "allowFrom": ["ou_xxxxxxxxxxxx"],              // 管理员的飞书 open_id
+  "dmPolicy": "disabled",                        // 当前配置：关闭私聊
+  "allowFrom": [],
   "groupPolicy": "allowlist",                    // 仅允许指定群组
-  "groupAllowFrom": ["oc_xxxxxxxxxxxx"],         // 允许的群组 ID 列表
+  "groupAllowFrom": [
+    "oc_xxxxxxxxxxxx",
+    "oc_yyyyyyyyyyyy"
+  ],
   "streaming": true,
   "blockStreaming": true,
   "accounts": {
@@ -98,11 +94,13 @@
   "groups": {
     "oc_xxxxxxxxxxxx": {                         // 群组精细配置
       "enabled": true,
-      "requireMention": true,
-      "agent": "broadband-ops"
+      "requireMention": true
+    },
+    "oc_yyyyyyyyyyyy": {
+      "enabled": true,
+      "requireMention": true
     }
-  },
-  "agent": "broadband-ops"                      // 默认 Agent
+  }
 }
 
 // bindings 配置
@@ -111,19 +109,61 @@
     "agentId": "broadband-ops",
     "match": {
       "channel": "feishu",
+      "accountId": "main",
       "peer": { "kind": "group", "id": "oc_xxxxxxxxxxxx" }
     }
   },
   {
     "agentId": "agent-manager",
     "match": {
-      "channel": "feishu"                        // 兜底
+      "channel": "feishu",
+      "accountId": "main",
+      "peer": { "kind": "group", "id": "oc_yyyyyyyyyyyy" }
     }
   }
 ]
 ```
 
 > **注意**：`groupAllowFrom` 中的群组 ID 和 `groups` 中的群组 ID 都是 `oc_xxx` 格式。两者需保持一致 — `groupAllowFrom` 控制准入，`groups` 控制行为。详见 [第 7 章 groupAllowFrom 说明](./07-feishu.md)。
+
+### accountId 路由命中（常见坑）
+
+### 根因说明
+
+- 当飞书使用 `channels.feishu.accounts.main` 这类多账号配置时，绑定若未写 `match.accountId: "main"`，会因账号不匹配而 miss，最终回落到默认 Agent。
+- 路由规则是统一的：`bindings.match.accountId` 省略时，仅匹配 `default` 账号。
+- `accountId` 必须写在 `match` 下，并且与 `peer` 同级；不能写在 `match.peer` 内。
+
+### 为什么 Telegram 常见场景“看起来不用写 accountId”
+
+- 若 Telegram 使用的是顶层单账号配置（未使用 `accounts`），当前账号即 `default`。
+- 此时省略 `match.accountId` 仍可匹配，所以看起来“无需填写”。
+
+### 三种账号配置与绑定写法
+
+1. 顶层单账号（不写 `accounts`）  
+   - 账号名为 `default`；`bindings` 可省略 `match.accountId`。
+2. 多账号（`accounts.main` / `accounts.xxx`）  
+   - `bindings` 应写对应 `match.accountId`（如 `"main"` / `"xxx"`）。
+3. 顶层 + 账号覆盖（merge）  
+   - 绑定仍按最终生效账号匹配，建议显式写 `match.accountId` 以避免歧义。
+
+### 可直接使用的飞书绑定示例
+
+```jsonc
+"bindings": [
+  {
+    "agentId": "broadband-ops",
+    "match": {
+      "channel": "feishu",
+      "accountId": "main",
+      "peer": { "kind": "group", "id": "oc_xxxxxxxxxxxx" }
+    }
+  }
+]
+```
+
+> **安全提醒：** 若配置文件中出现了真实 `appSecret` / token，请尽快在平台侧轮换并改用安全存储方式（如环境变量或密钥管理）。
 
 ## 8.4 Telegram + 飞书混合绑定
 
@@ -143,6 +183,7 @@
     "agentId": "broadband-ops",
     "match": {
       "channel": "feishu",
+      "accountId": "main",   // 多账号时显式指定
       "peer": { "kind": "group", "id": "<飞书群组open_id>" }
     }
   },
@@ -153,7 +194,7 @@
   },
   {
     "agentId": "agent-manager",
-    "match": { "channel": "feishu" }
+    "match": { "channel": "feishu", "accountId": "main" }
   }
 ]
 ```

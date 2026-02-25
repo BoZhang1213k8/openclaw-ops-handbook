@@ -61,6 +61,15 @@
 
 ## 版本记录
 
+### v2.7.0（2026-02-25）
+
+**飞书路由规则定稿** — 按现网 `openclaw.json` 修正 07/08 章中飞书绑定与账号匹配说明，消除 `accountId` 放置位置和 `groups` 路由职责的歧义。
+
+- **07 章修正**：`channels.feishu` 示例对齐现网（`dmPolicy: "disabled"`、`allowFrom: []`、`groupAllowFrom` 多群组示例）；`groups` 示例仅保留群行为控制（如 `requireMention`），移除误导性的群内路由写法；新增提示明确 `accountId` 不在 `groups` 中配置
+- **08 章修正**：`bindings` 示例统一补齐 `match.accountId: "main"`（与 `match.peer` 同级）；飞书兜底/混合绑定示例同步补齐 `accountId`；“完整示例”改为 `groups` 仅控行为、`bindings` 负责路由
+- **规则澄清**：统一强调 `bindings.match.accountId` 省略时仅匹配 `default`；多账号（如 `accounts.main`）必须显式写对应 `accountId`，否则可能路由 miss 并回落默认 Agent
+- **安全提醒补充**：文档内新增飞书密钥/令牌风险提示，建议生产环境使用占位符与密钥管理，并对已暴露凭证及时轮换
+
 ### v2.6.0（2026-02-14）
 
 **飞书渠道访问控制修正与安全加固** — 修正 `groupPolicy: "allowlist"` 配置方式，完成安全审计加固。

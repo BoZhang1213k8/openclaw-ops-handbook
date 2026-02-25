@@ -29,10 +29,10 @@
   "feishu": {
     "enabled": true,
     "domain": "feishu",                          // "feishu" 或 "lark"（国际版用 lark）
-    "dmPolicy": "allowlist",                     // 私聊策略: allowlist（仅允许白名单用户）
-    "allowFrom": ["ou_xxxxxxxxxxxx"],            // 允许私聊的飞书用户 open_id 列表
+    "dmPolicy": "disabled",                      // 当前配置: 关闭私聊
+    "allowFrom": [],                             // dmPolicy=disabled 时通常为空
     "groupPolicy": "allowlist",                  // 群组策略: allowlist = 仅允许指定群组
-    "groupAllowFrom": ["oc_xxxxxxxxxxxx"],       // 允许的群组 ID 列表
+    "groupAllowFrom": ["oc_xxxxxxxxxxxx", "oc_yyyyyyyyyyyy"], // 允许的群组 ID 列表
     "streaming": true,                           // 启用流式输出
     "blockStreaming": true,                      // 阻塞式流式输出
     "accounts": {
@@ -45,11 +45,13 @@
     "groups": {
       "oc_xxxxxxxxxxxx": {                       // 群组精细配置
         "enabled": true,
-        "requireMention": true,                  // 需要 @Bot 才响应
-        "agent": "broadband-ops"                 // 该群组使用的 Agent
+        "requireMention": true                   // 需要 @Bot 才响应
+      },
+      "oc_yyyyyyyyyyyy": {
+        "enabled": true,
+        "requireMention": true
       }
-    },
-    "agent": "broadband-ops"                     // 默认 Agent
+    }
   }
 }
 ```
@@ -238,13 +240,14 @@ tail -f ~/.openclaw/logs/gateway.log | grep -i feishu
     "groups": {
       "<群组 open_id>": {
         "enabled": true,
-        "requireMention": true,    // 需要 @Bot 才响应
-        "agent": "broadband-ops"   // 指定该群组的 Agent
+        "requireMention": true     // 需要 @Bot 才响应
       }
     }
   }
 }
 ```
+
+> **路由命中提示：** `groups` 只控制群行为（如 `requireMention`），不负责 Agent 路由。若使用多账号（如 `channels.feishu.accounts.main`），应在 `bindings[].match.accountId`（与 `match.peer` 同级）里写 `"main"`，否则绑定可能 miss 并回落到默认 Agent。详见 [第 8 章绑定示例](./08-feishu-bindagent.md)。
 
 **获取飞书群组 open_id：**
 - 查看网关日志
