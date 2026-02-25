@@ -1,5 +1,12 @@
 # 9. 接入钉钉自定义机器人
 
+## 本章定位（通知通道，不是对话通道）
+
+本章解决的是“Skill 执行结果如何主动推送到钉钉群”。  
+与 Telegram/飞书不同，钉钉自定义机器人不参与 Agent 对话路由，而是作为 Skill 的输出目标。
+
+建议顺序：创建钉钉机器人 → 在 Skill `.env` 配置 webhook/secret → 在 `skill.json` 增加 `send-*` 命令 → 脚本实现推送。
+
 ## 9.1 与 Telegram/飞书的区别
 
 钉钉的接入方式与 Telegram 和飞书不同：
@@ -240,3 +247,7 @@ FEISHU_CHAT_ID=<chat_id>
 - 不透露钉钉群 ID、机器人名称
 - 不透露通知推送的技术实现方式
 ```
+
+## 下一步
+
+进入 [第 10 章：为 Agent 创建 Skills](./10-create-skills.md)，把“通知命令模式”系统化复用到更多 Skill。

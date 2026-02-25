@@ -1,5 +1,16 @@
 # 5. 接入 Telegram 机器人
 
+## 本章定位（先打通渠道，再做路由）
+
+本章目标是让 Telegram Bot 与 OpenClaw 网关完成连通，并通过最小安全配置上线（`dmPolicy`、`groupPolicy`、代理、插件）。
+
+完成本章后，你将获得：
+- 可正常收发消息的 Telegram Bot
+- 可控的访问边界（建议仅群聊白名单）
+- 可用于后续群组绑定的基础环境
+
+建议顺序：创建 Bot → 配置 `channels.telegram` → 启用插件 → 重启并验证。
+
 ## 5.1 创建 Telegram Bot
 
 1. 在 Telegram 中搜索 `@BotFather`
@@ -104,3 +115,7 @@ openclaw gateway restart
 ```bash
 tail -f ~/.openclaw/logs/gateway.log
 ```
+
+## 下一步
+
+进入 [第 6 章：创建 Telegram 群组并绑定 Agent](./06-telegram-bindgroups.md)，把已接入的 Bot 绑定到具体群组并完成消息路由。

@@ -1,5 +1,13 @@
 # 8. 为飞书绑定 Agent
 
+## 本章定位（把飞书消息绑定到正确 Agent）
+
+本章聚焦“路由层”而非“接入层”：  
+- `channels.feishu.groups` 负责群行为控制（如 `requireMention`）  
+- `bindings` 负责消息路由（`agentId`、`match.peer`、`match.accountId`）
+
+建议顺序：先完成精确绑定，再加兜底绑定，最后做多渠道混合绑定。
+
 ## 8.1 绑定方式
 
 当前配置中，Agent 路由统一走 `bindings`；`groups` 用于群组行为控制（如 `requireMention`）。
@@ -224,3 +232,8 @@
 **已实施的解决方案**：所有 Skill 的确认已改为 **特定确认短语机制**（如"确认删除 SN 123"、"确认回单 100235"），拒绝通用的"确认"回复。
 
 > 📖 **完整的问题分析、解决方案和操作规范详见 [第 19 章：群聊多人并发操作的确认安全](./19-group-confirmation-safety.md)**
+
+## 下一步
+
+如果你还需要“只推送不对话”的告警通道，继续 [第 9 章：接入钉钉自定义机器人](./09-dingtalk.md)。  
+若准备开始能力建设，可直接进入 [第 10 章：为 Agent 创建 Skills](./10-create-skills.md)。

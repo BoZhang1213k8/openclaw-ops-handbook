@@ -4,27 +4,49 @@
 
 > 基于 OpenClaw **2026.2.23** 编写
 
-## 目录
+## 目录（按落地主线）
+
+### A. 基础搭建（先完成）
 
 1. [安装 OpenClaw](./01-install.md)
 2. [核心概念](./02-concepts.md)
 3. [创建 Agent Manager](./03-create-agent-manager.md)
 4. [通过 Agent Manager 创建其他 Agent](./04-create-agents.md)
+
+### B. 渠道接入与路由（先 Telegram，再飞书）
+
 5. [接入 Telegram 机器人](./05-telegram.md)
 6. [创建 Telegram 群组并绑定 Agent](./06-telegram-bindgroups.md)
 7. [接入飞书](./07-feishu.md)
 8. [为飞书绑定 Agent](./08-feishu-bindagent.md)
 9. [接入钉钉自定义机器人](./09-dingtalk.md)
+
+### C. 技能开发与上线（能力建设）
+
 10. [为 Agent 创建 Skills](./10-create-skills.md)
 11. [为 Skills 配置安全规则](./11-security-rules.md)
-12. [Policy 权限策略配置](./12-policy.md)
-13. [定时任务（Cron）配置](./13-cron.md)
-14. [安全加固最佳实践](./14-security-best-practices.md)
-15. [通过 HTTP API 和 Web 聊天界面访问 Agent](./15-http-web-chat.md)
-16. [实战案例：ToDesk 远程连接信息复制 Skill](./16-case-todesk-skill.md)
-17. [会话管理与性能优化](./17-session-management.md)
 18. [Agent 技能列表完整性配置](./18-agent-skill-list-completeness.md)
+16. [实战案例：ToDesk 远程连接信息复制 Skill](./16-case-todesk-skill.md)
+
+### D. 安全与权限（上线前必做）
+
+12. [Policy 权限策略配置](./12-policy.md)
+14. [安全加固最佳实践](./14-security-best-practices.md)
 19. [群聊多人并发操作的确认安全](./19-group-confirmation-safety.md)
+
+### E. 运维与访问（稳定运行）
+
+13. [定时任务（Cron）配置](./13-cron.md)
+15. [通过 HTTP API 和 Web 聊天界面访问 Agent](./15-http-web-chat.md)
+17. [会话管理与性能优化](./17-session-management.md)
+
+## 推荐阅读顺序（首次部署）
+
+`01 → 02 → 03 → 04 → 05 → 06 → 10 → 11 → 12 → 14 → 13 → 17`
+
+说明：
+- 先把 Agent 和 Telegram 跑通，再做 Skill 与安全加固，最后做自动化与性能优化。
+- 飞书（07/08）和 Web（15）可在 Telegram 主链路稳定后再接入。
 
 ---
 

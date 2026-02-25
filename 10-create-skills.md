@@ -1,5 +1,16 @@
 # 10. 为 Agent 创建 Skills
 
+## 本章定位（从“能对话”到“能执行”）
+
+前面章节完成了渠道和路由，本章开始构建 Agent 的业务执行能力。  
+阅读时建议按以下主线：
+
+1. 先看 `10.0`（推荐工作流，基于 Cursor Plan）
+2. 再看 `10.1 ~ 10.9`（通用结构、命令模式、安全与注册）
+3. 最后看 `10.10 ~ 10.11`（实战样例与完整流程清单）
+
+如果你是首次建设团队 Skill 体系，优先保证“先 dry-run，再 execute，再注册 TOOLS.md”三件事一致。
+
 ## 10.0 在 Cursor 中基于 Plan 创建 Skill（推荐）
 
 本手册中的 broadband-ops-agent 相关 Skill 均在 Cursor 中创建，并统一使用标准 Plan 作为模板，确保目录结构、文件规范、符号链接和 AGENTS.md/TOOLS.md 注册流程一致。
@@ -540,3 +551,8 @@ ln -s ~/openClawSkills/{skill-name} \
 - [ ] AGENTS.md 三处均已更新
 - [ ] TOOLS.md 使用说明完整
 - [ ] 默认走测试环境，生产需显式 `--env prod`
+
+## 下一步
+
+完成 Skill 开发后，继续 [第 11 章：为 Skills 配置安全规则](./11-security-rules.md)。  
+如果你在管理多个 Skill，还建议同步阅读 [第 18 章：Agent 技能列表完整性配置](./18-agent-skill-list-completeness.md)。

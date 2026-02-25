@@ -1,5 +1,12 @@
 # 12. Policy 权限策略配置
 
+## 本章定位（把安全规则落到系统权限）
+
+第 11 章是“行为约束”，本章是“权限约束”。  
+目标是让 Agent 即使被诱导，也因为权限边界而无法读取/写入不该访问的资源。
+
+建议按顺序配置：`tools` → `files` → `skills`，最后再做新增 Agent 的增量规则。
+
 ## 12.1 概述
 
 `policy.yaml` 是 OpenClaw 的系统级安全策略文件，控制三大类权限：
@@ -308,3 +315,8 @@ skills:
 # 在 agent-manager 的 deny 中添加：
 #   - "~/.openclaw/workspace/data-analyst-agent/**"
 ```
+
+## 下一步
+
+继续 [第 13 章：定时任务（Cron）配置](./13-cron.md)，把已上线的 Agent/Skill 变成可自动执行的运维流程。  
+完成后建议对照 [第 14 章](./14-security-best-practices.md) 做一次整体安全审计。

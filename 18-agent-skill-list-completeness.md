@@ -79,7 +79,7 @@
 
 ## 18.5 与 14 章 Checklist 的衔接
 
-在 [14.8 新 Agent/Skill 上线 Checklist](./14-security-best-practices.md#148-新-agentskill-上线-checklist) 中，Skill 上线已包含「TOOLS.md 已更新」。本配置进一步明确：
+在 [14.9 新 Agent/Skill 上线 Checklist](./14-security-best-practices.md#149-新-agentskill-上线-checklist) 中，Skill 上线已包含「TOOLS.md 已更新」。本配置进一步明确：
 
 - **AGENTS.md 必须同步** — 主要职责 + 标准回复模板
 - **技能列表回复规范** — 强制以 TOOLS.md 为准，避免依赖上下文记忆
