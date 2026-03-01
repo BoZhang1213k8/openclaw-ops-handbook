@@ -92,6 +92,7 @@
   ],
   "streaming": true,
   "blockStreaming": true,
+  "renderMode": "card",                          // 飞书 card 渲染（流式推荐）
   "accounts": {
     "main": {
       "appId": "<App ID>",

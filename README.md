@@ -83,6 +83,13 @@
 
 ## 版本记录
 
+### v2.8.0（2026-03-01）
+
+**飞书 card 流式输出说明补充** — 对齐现网 `openclaw.json` 的 `renderMode: "card"` 配置，补齐 CardKit 权限前置条件。
+
+- **07 章更新**：在权限章节补充“Card 流式前置条件”；在 `channels.feishu` 示例加入 `renderMode: "card"`；新增“飞书流式显示建议（card 模式）”，明确 `streaming`、`blockStreaming`、`renderMode` 与 CardKit 权限的配合关系
+- **08 章更新**：飞书完整绑定示例补充 `renderMode: "card"`，避免按示例落地时遗漏渲染模式配置
+
 ### v2.7.0（2026-02-25）
 
 **飞书路由规则定稿** — 按现网 `openclaw.json` 修正 07/08 章中飞书绑定与账号匹配说明，消除 `accountId` 放置位置和 `groups` 路由职责的歧义。

@@ -27,6 +27,7 @@
   "telegram": {
     "enabled": true,
     "botToken": "<你的 Bot Token>",
+    "proxy": "http://127.0.0.1:6152", // 可选：仅 Telegram 走代理（推荐）
     "dmPolicy": "disabled",         // 私聊策略: disabled（关闭私聊）
     "groupPolicy": "allowlist",     // 群组策略: allowlist（白名单）
     "streamMode": "partial",        // 流式输出模式
@@ -84,18 +85,32 @@
 
 ## 5.5 代理配置（中国大陆需要）
 
-如在中国大陆使用，需要配置代理：
+推荐优先使用 **Telegram 渠道级代理**，避免影响 Feishu/模型 API 等其他请求：
 
 ```jsonc
-"env": {
-  "HTTPS_PROXY": "http://127.0.0.1:7890",
-  "HTTP_PROXY": "http://127.0.0.1:7890",
-  "ALL_PROXY": "socks5://127.0.0.1:7891",
-  "NO_PROXY": "api.moonshot.cn,volces.com"
+"channels": {
+  "telegram": {
+    "enabled": true,
+    "proxy": "http://127.0.0.1:6152",
+    "botToken": "<你的 Bot Token>"
+  }
 }
 ```
 
-> **注意：** `NO_PROXY` 中应包含国内模型 API 的域名，避免国内 API 走代理。
+如你还需要全局代理，再补充 `env`：
+
+```jsonc
+"env": {
+  "NODE_USE_ENV_PROXY": "1",
+  "HTTPS_PROXY": "http://127.0.0.1:6152",
+  "HTTP_PROXY": "http://127.0.0.1:6152",
+  "NO_PROXY": "api.moonshot.cn,volces.com,cn-beijing.volces.com,open.feishu.cn,feishu.cn,larksuite.com,open.larksuite.com"
+}
+```
+
+> **注意 1：** 建议不要默认设置 `ALL_PROXY`，否则可能误伤其他渠道（例如 Feishu）并引发 503/超时。  
+> **注意 2：** `NO_PROXY` 中应包含国内模型 API 与不应走代理的渠道域名。  
+> **注意 3：** 改完配置后必须重启 `gateway` 才会生效。
 
 ## 5.6 重启网关
 
